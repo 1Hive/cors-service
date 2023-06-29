@@ -9,7 +9,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 const MNEMONIC = env.MNEMONIC;
 const ETH_URI = env.ETH_URI;
 const CONTRACT_ADDRESS = env.CONTRACT_ADDRESS;
-const INTERVAL = env.INTERVAL || ONE_HOUR;
 
 // Configuration
 if (!MNEMONIC) {
@@ -27,26 +26,19 @@ if (!CONTRACT_ADDRESS) {
   process.exit(1);
 }
 
-if (!INTERVAL) {
-  logger.error("Please set `INTERVAL`.");
-  process.exit(1);
-}
-
 // Set up provider and wallet
 const provider = ethers.getDefaultProvider(ETH_URI);
 const wallet = ethers.Wallet.fromMnemonic(MNEMONIC).connect(provider);
-
-// Run information
-logger.info(`Acting as ${wallet.address}`);
-logger.info(`Connected to ${ETH_URI}`);
-logger.info(
-  `Calling FluidProposals on ${CONTRACT_ADDRESS} every ${INTERVAL}ms`
-);
 
 async function callSync(
   signer: ethers.Signer | undefined,
   fluidProposalsAddress: string | undefined
 ) {
+  // Run information
+  logger.info(`Acting as ${wallet.address}`);
+  logger.info(`Connected to ${ETH_URI}`);
+  logger.info(`Calling FluidProposals on ${CONTRACT_ADDRESS}`);
+
   if (!fluidProposalsAddress) {
     logger.error("Please set `CONTRACT_ADDRESS`.");
     return false;
@@ -70,7 +62,6 @@ async function callSync(
   const SUPPORTS_EIP1559 = Boolean(
     (await provider.getBlock("latest")).baseFeePerGas
   );
-
   // Calculate fees
   const feeData = await provider.getFeeData();
 
@@ -80,7 +71,7 @@ async function callSync(
   let OVERRIDES;
   if (SUPPORTS_EIP1559) {
     OVERRIDES = {
-      gasLimit: 1400000,
+      gasLimit: env.GAS_LIMIT,
       maxFeePerGas: feeData.maxFeePerGas,
       maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
       nonce: nonce,
@@ -88,7 +79,7 @@ async function callSync(
   } else {
     OVERRIDES = {
       gasPrice: feeData.gasPrice,
-      gasLimit: 1400000,
+      gasLimit: env.GAS_LIMIT,
       nonce: nonce,
     };
   }
@@ -101,6 +92,7 @@ async function callSync(
   } catch (err: any) {
     logger.fatal(`- Transaction failed to process.`);
     logger.fatal(`- ${err.message}`);
+    return false;
   }
   logger.info("Done calling sync.");
 
@@ -114,7 +106,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("handler");
+  logger.info("Starting sync...");
   const status = await callSync(wallet, CONTRACT_ADDRESS);
 
   const response = {

@@ -6,7 +6,7 @@ export const env = createEnv({
     MNEMONIC:z.string(),
     ETH_URI: z.string().url(),
     CONTRACT_ADDRESS: z.string(),
-    INTERVAL: z.number().optional().default(60 * 60 * 1000),
+    GAS_LIMIT: z.string().optional().default(5500000),
   },
   client: {
   },
@@ -21,6 +21,6 @@ export const env = createEnv({
     MNEMONIC: process.env.MNEMONIC,
     ETH_URI: process.env.ETH_URI,
     CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS,
-    INTERVAL: process.env.INTERVAL,
+    GAS_LIMIT: process.env.GAS_LIMIT,
   }
 });
