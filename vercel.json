@@ -1,6 +1,5 @@
 {
   "buildCommand": "pnpm turbo build",
-  "ignoreCommand": "pnpm dlx turbo-ignore",
   "crons": [
     {
       "path": "/api/cron/fluid-proposal",
