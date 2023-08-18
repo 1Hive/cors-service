@@ -1,12 +1,16 @@
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
+  const { searchParams, pathname } = new URL(request.url);
+  // console.log(request);
   let urlToFetch = searchParams.get("url");
   if (!urlToFetch) {
-    return new Response("url query param not provided", {
-      status: 400,
-    });
+    urlToFetch = pathname.split("/cors/")[1];
+    if (!urlToFetch) {
+      return new Response("url query param not provided", {
+        status: 400,
+      });
+    }
   }
 
   if (!urlToFetch?.startsWith("http")) {

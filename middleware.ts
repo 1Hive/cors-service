@@ -7,21 +7,26 @@ const app = createEdgeRouter<NextRequest, NextFetchEvent>();
 
 app.use(async (request, event, next) => {
   // logging request example
-  console.log(`${request.method} ${request.url}`);
+  console.log(`Middleware: ${request.method} ${request.url}`);
   return next();
-});
-
-app.get("/api/cors/(.*)", function (req: NextRequest, event: NextFetchEvent) {
-  console.log(req.url);
-  console.log(req.nextUrl.pathname.startsWith("/api/cors"));
-  const url = req.nextUrl.pathname.split("/api/cors/")[1];
-  console.log(url);
-  return NextResponse.redirect(new URL(`/api/cors?url=${url}`, req.url));
 });
 
 app.all(() => {
   // default if none of the above matches
-  return NextResponse.next();
+  const res = NextResponse.next();
+  // add the CORS headers to the response
+  res.headers.append("Access-Control-Allow-Credentials", "true");
+  res.headers.append("Access-Control-Allow-Origin", "*"); // replace this your actual origin
+  res.headers.append(
+    "Access-Control-Allow-Methods",
+    "GET,DELETE,PATCH,POST,PUT"
+  );
+  res.headers.append(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+  console.log("Cors added via Middleware");
+  return res;
 });
 
 export function middleware(request: NextRequest, event: NextFetchEvent) {
