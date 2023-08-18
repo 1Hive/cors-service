@@ -1,4 +1,4 @@
-# 1Hive Cron Jobs
+# 1Hive CORS Service
 
 Next, run Next.js in development mode:
 
