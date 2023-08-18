@@ -1,9 +1,3 @@
 {
-  "buildCommand": "pnpm turbo build",
-  "crons": [
-    {
-      "path": "/api/cron/fluid-proposal",
-      "schedule": "0 * * * *"
-    }
-  ]
+  "buildCommand": "pnpm turbo build"
 }

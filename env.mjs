@@ -1,12 +1,11 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
- 
+import packageJson from './package.json'; 
+
 export const env = createEnv({
   server: {
-    MNEMONIC:z.string(),
-    ETH_URI: z.string().url(),
-    CONTRACT_ADDRESS: z.string(),
-    GAS_LIMIT: z.string().optional().default("5500000"),
+    VERSION: z.string().default(packageJson.version??"0.0.0"),
+    // GITHUB_API_TOKEN: z.string(),
   },
   client: {
   },
@@ -18,9 +17,6 @@ export const env = createEnv({
 //   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   experimental__runtimeEnv: {
-    MNEMONIC: process.env.MNEMONIC,
-    ETH_URI: process.env.ETH_URI,
-    CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS,
-    GAS_LIMIT: process.env.GAS_LIMIT,
+    // GITHUB_API_TOKEN: process.env.GITHUB_API_TOKEN
   }
 });
