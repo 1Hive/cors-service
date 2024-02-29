@@ -14,18 +14,20 @@ export async function POST(request: Request) {
 
   console.log("FormData:", formData);
 
-  const stream = await formData.arrayBuffer();
+  // const stream = await formData.arrayBuffer();
 
-  const buffer = Buffer.from(stream);
+  // const buffer = Buffer.from(stream);
 
-  console.log("Buffer:", buffer);
+  // console.log("Buffer:", buffer);
   const boundary = parse.getBoundary(formData.type);
+  const text = await formData.text();
+  console.log("Text:", text);
   // const boundary =
   // "multipart/form-data;boundary=----we?bkitformboundaryeaaql9h1uwaqaw9c";
 
-  const parts = parse.Parse(buffer, boundary);
+  const parts = parse.Parse(Buffer.from(text), boundary);
 
-  console.log("Parts:", parts);
+  // console.log("Parts:", parts);
   if (parts.length === 0) {
     return NextResponse.json({ error: "No parts found" }, { status: 400 });
   }
