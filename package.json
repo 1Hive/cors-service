@@ -14,11 +14,9 @@
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
     "@t3-oss/env-nextjs": "^0.6.0",
-    "@types/parse-multipart": "^1.0.2",
     "next": "canary",
     "next-connect": "1.0.0-next.4",
     "node-fetch": "^3.3.2",
-    "parse-multipart": "^1.0.4",
     "react": "latest",
     "react-dom": "latest",
     "zod": "^3.21.4"

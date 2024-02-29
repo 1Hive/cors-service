@@ -2,45 +2,69 @@ import { NextResponse } from "next/server";
 import pinataSDK from "@pinata/sdk";
 import { env } from "~/env.mjs";
 import { Stream } from "stream";
-import * as parse from "parse-multipart";
 
 export const runtime = "nodejs";
 
 const pinata = new pinataSDK({ pinataJWTKey: env.PINATA_JWT });
 
-export async function POST(request: Request) {
-  const formData = await request.blob();
-  // const formData = await request.formData();
+async function parseMultipartFormData(request: Request) {
+  const blobMulti = await request.blob();
 
-  console.log("FormData:", formData);
+  console.log("Blob:", blobMulti);
+  const formDataString = await blobMulti.text();
+  console.log("Text:", formDataString);
+  console.log(formDataString);
 
-  // const stream = await formData.arrayBuffer();
+  const boundary = formDataString.split("\n")[0].trim();
 
-  // const buffer = Buffer.from(stream);
+  const parts = formDataString.split(boundary);
+  // const formData = new FormData();
 
-  // console.log("Buffer:", buffer);
-  const boundary = parse.getBoundary(formData.type);
-  const text = await formData.text();
-  console.log("Text:", text);
-  // const boundary =
-  // "multipart/form-data;boundary=----we?bkitformboundaryeaaql9h1uwaqaw9c";
+  let name = undefined;
+  let filename = undefined;
+  let contentType = undefined;
+  let content = undefined;
+  let blob: Blob | undefined = undefined;
 
-  const parts = parse.Parse(Buffer.from(text), boundary);
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (part.includes("filename")) {
+      const nameMatch = part.match(/name="([^"]+)"/);
+      const filenameMatch = part.match(/filename="([^"]+)"/);
+      const contentTypeMatch = part.match(/Content-Type: ([^\s]+)/);
 
-  // console.log("Parts:", parts);
-  if (parts.length === 0) {
-    return NextResponse.json({ error: "No parts found" }, { status: 400 });
+      if (nameMatch && filenameMatch && contentTypeMatch) {
+        name = nameMatch[1];
+        filename = filenameMatch[1];
+        contentType = contentTypeMatch[1];
+        content = part.split("\n").slice(4, -2).join("\n"); // Extracting content
+
+        blob = new Blob([content], { type: contentType });
+        // formData.append(name, blob, filename);
+      }
+    }
   }
 
-  const part = parts[0];
-  console.log("Part:", part);
+  return { name, filename, contentType, content, blob };
+}
+export async function POST(request: Request) {
+  const { filename, content } = await parseMultipartFormData(request);
 
-  const resPinata = await pinata.pinFileToIPFS(
-    Stream.Readable.from(part.data),
-    {
-      pinataMetadata: { name: part.filename },
-    }
-  );
+  if (!content) {
+    return NextResponse.json(
+      { error: "No file found in request" },
+      { status: 400 }
+    );
+  }
+  if (!filename) {
+    return NextResponse.json(
+      { error: "No filename found in request" },
+      { status: 400 }
+    );
+  }
+  const resPinata = await pinata.pinFileToIPFS(Stream.Readable.from(content), {
+    pinataMetadata: { name: filename },
+  });
 
   return NextResponse.json(resPinata, { status: 200 });
 }
