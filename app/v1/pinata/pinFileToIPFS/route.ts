@@ -3,12 +3,9 @@ import pinataSDK from "@pinata/sdk";
 import { env } from "~/env.mjs";
 import { Stream } from "stream";
 
+export const runtime = "nodejs";
+
 const pinata = new pinataSDK({ pinataJWTKey: env.PINATA_JWT });
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 export async function POST(request: Request) {
   // try {
