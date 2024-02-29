@@ -5,7 +5,7 @@ import packageJson from './package.json';
 export const env = createEnv({
   server: {
     VERSION: z.string().default(packageJson.version??"0.0.0"),
-    // GITHUB_API_TOKEN: z.string(),
+    PINATA_JWT: z.string().or(z.undefined()),
   },
   client: {
   },

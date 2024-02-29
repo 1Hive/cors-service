@@ -1,6 +1,6 @@
 {
   "name": "cors-service",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "https://github.com/1hive/cors-service.git",
   "license": "MIT",
   "private": true,
@@ -12,6 +12,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
     "@t3-oss/env-nextjs": "^0.6.0",
     "next": "canary",
     "next-connect": "1.0.0-next.4",
