@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   // pinataMetadata: { name: f.name },
   // });
   // return NextResponse.json(resPinata, { status: 200 });
-  return NextResponse.json({}, { status: 200 });
+  return NextResponse.json({ result }, { status: 200 });
   // } catch (error) {
   // console.error(error);
   // return NextResponse.json({ error }, { status: 500 });
