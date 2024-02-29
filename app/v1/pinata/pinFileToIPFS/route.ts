@@ -2,35 +2,37 @@ import { NextResponse } from "next/server";
 import pinataSDK from "@pinata/sdk";
 import { env } from "~/env.mjs";
 import { Stream } from "stream";
+import * as parse from "parse-multipart";
 
 export const runtime = "nodejs";
 
 const pinata = new pinataSDK({ pinataJWTKey: env.PINATA_JWT });
 
 export async function POST(request: Request) {
-  // try {
-  // Parse the string into FormData
-  // const formData = await parseMultipartFormData(request);
-  const formData = await request.formData();
+  const formData = await request.blob();
 
-  // Get the file from FormData
-  const file = formData.get("file");
+  console.log("FormData:", formData);
 
-  console.log("File:", file);
+  const stream = await formData.arrayBuffer();
 
-  let f = formData.get("file") as File | null | undefined;
-  if (!f) {
-    return NextResponse.json({ error: "No file found" }, { status: 400 });
+  const buffer = Buffer.from(stream);
+
+  const boundary = parse.getBoundary(formData.type);
+  const parts = parse.Parse(buffer, boundary);
+
+  if (parts.length === 0) {
+    return NextResponse.json({ error: "No parts found" }, { status: 400 });
   }
-  const streamReads = Stream.Readable.from(f.stream());
 
-  const resPinata = await pinata.pinFileToIPFS(streamReads, {
-    pinataMetadata: { name: f.name },
-  });
+  const part = parts[0];
+  console.log("Part:", part);
+
+  const resPinata = await pinata.pinFileToIPFS(
+    Stream.Readable.from(part.data),
+    {
+      pinataMetadata: { name: part.filename },
+    }
+  );
+
   return NextResponse.json(resPinata, { status: 200 });
-  // return NextResponse.json({ result: formDataString }, { status: 200 });
-  // } catch (error) {
-  // console.error(error);
-  // return NextResponse.json({ error }, { status: 500 });
-  // }
 }

@@ -11,6 +11,9 @@ dependencies:
   '@t3-oss/env-nextjs':
     specifier: ^0.6.0
     version: 0.6.0(typescript@4.9.5)(zod@3.21.4)
+  '@types/parse-multipart':
+    specifier: ^1.0.2
+    version: 1.0.2
   next:
     specifier: canary
     version: 13.4.18-canary.0(@babel/core@7.22.10)(react-dom@18.2.0)(react@18.2.0)
@@ -20,6 +23,9 @@ dependencies:
   node-fetch:
     specifier: ^3.3.2
     version: 3.3.2
+  parse-multipart:
+    specifier: ^1.0.4
+    version: 1.0.4
   react:
     specifier: latest
     version: 18.2.0
@@ -965,7 +971,12 @@ packages:
 
   /@types/node@17.0.45:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
-    dev: true
+
+  /@types/parse-multipart@1.0.2:
+    resolution: {integrity: sha512-nB0q6ba/G+HM7dqY5wCP7AycoMQ9Ikdj/Gahpaz0tRl4Aap1YKaJTSLl9Vh5Pn9bx/2hkC28hq5bQCJtQVM+Pw==}
+    dependencies:
+      '@types/node': 17.0.45
+    dev: false
 
   /@types/prop-types@15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
@@ -3927,6 +3938,10 @@ packages:
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
     dev: true
+
+  /parse-multipart@1.0.4:
+    resolution: {integrity: sha512-BQBmA/1qJzNnrPnRUzJhqGwbybsXa6Ot8vII5w+JT8gp2p7h9oWHwgAc29ohp669ZPzIy9izLi8ali9ngGmuAQ==}
+    dev: false
 
   /parseurl@1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
