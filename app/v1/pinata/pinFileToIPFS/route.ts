@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import pinataSDK from "@pinata/sdk";
 import { env } from "~/env.mjs";
 import { Stream } from "stream";
 
 const pinata = new pinataSDK({ pinataJWTKey: env.PINATA_JWT });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   // try {
   // Parse the string into FormData
   // const formData = await parseMultipartFormData(request);
