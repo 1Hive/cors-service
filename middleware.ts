@@ -7,7 +7,7 @@ const app = createEdgeRouter<NextRequest, NextFetchEvent>();
 
 app.use(async (request, event, next) => {
   // logging request example
-  console.log(`Middleware: ${request.method} ${request.url}`);
+  // console.log(`Middleware: ${request.method} ${request.url}`);
   return next();
 });
 
@@ -25,7 +25,7 @@ app.all(() => {
     "Access-Control-Allow-Headers",
     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
   );
-  console.log("Cors added via Middleware");
+  // console.log("Cors added via Middleware");
   return res;
 });
 
